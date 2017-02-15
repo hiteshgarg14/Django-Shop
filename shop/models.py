@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.core.urlresolvers import reverse
 
 class Category(models.Model):
     name = models.CharField(max_length=200,db_index=True)
@@ -11,6 +12,9 @@ class Category(models.Model):
         verbose_name = 'category'
         verbose_name_plural = 'categories'
 
+    def get_absolute_url(self):
+        return reverse('shop:product_list_by_category', args=[self.slug])
+
     def __str__(self):
         return self.name
 
@@ -18,7 +22,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category,related_name='products')
     name = models.CharField(max_length=200,db_index=True)
     slug = models.SlugField(max_length=200,db_index=True)
-    image = models.ImageField(upload_to='media/products/%Y/%m/%d',blank=True)
+    image = models.ImageField(upload_to='products/%Y/%m/%d',blank=True)
     description = models.TextField(blank=True)
     """
     For the price field, we use DecimalField instead of FloatField to avoid rounding issues.
@@ -37,6 +41,9 @@ class Product(models.Model):
     class Meta:
         ordering = ('name',)
         index_together = (('id','slug'),)
+
+    def get_absolute_url(self):
+        return reverse('shop:product_detail',args=[self.id, self.slug])
 
     def __str__(self):
         return self.name
