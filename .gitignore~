@@ -55,5 +55,5 @@ docs/_build/
 
 
 # custom
-media
-db.sqlite3
+myshop/media
+myshop/db.sqlite3
